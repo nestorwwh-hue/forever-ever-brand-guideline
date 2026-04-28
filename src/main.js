@@ -436,19 +436,37 @@ motionItems.forEach(item => {
   item.addEventListener('click', () => {
     motionItems.forEach(i => i.classList.remove('active'));
     item.classList.add('active');
+    
     const easingType = item.getAttribute('data-easing');
+    const durationText = item.querySelector('.m-value').textContent; // e.g., "150ms"
     
     let curve = 'ease-out';
     if (easingType === 'ease-in-out') curve = 'cubic-bezier(0.42, 0, 0.58, 1)';
     if (easingType === 'spring') curve = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
     
     if (previewCard) {
+      // Apply the duration and easing to the card
+      previewCard.style.transitionDuration = durationText;
       previewCard.style.transitionTimingFunction = curve;
-      // Trigger a simple move animation to show the easing
-      previewCard.style.transform = 'translateX(20px)';
-      setTimeout(() => {
-        previewCard.style.transform = 'translateX(0)';
-      }, 500);
+      
+      // Trigger specific animation behaviors
+      if (item.querySelector('.m-label').textContent === 'Reveal') {
+        // Special Reveal Animation: Fade out/in + Scale
+        previewCard.style.opacity = '0';
+        previewCard.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+          previewCard.style.opacity = '1';
+          previewCard.style.transform = 'scale(1)';
+        }, 100);
+      } else {
+        // Regular Motion Animation: Small slide
+        previewCard.style.transform = 'translateX(30px)';
+        
+        setTimeout(() => {
+          previewCard.style.transform = 'translateX(0)';
+        }, parseInt(durationText) + 50); // Wait for the forward animation to finish
+      }
     }
   });
 });
@@ -646,24 +664,6 @@ if (constructionToggle) {
     mainCard.classList.toggle('show-construction');
   });
 }
-
-// Social Media Interactivity
-const socialTabs = document.querySelectorAll('.social-tab');
-const socialViews = document.querySelectorAll('.social-content-view');
-
-socialTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    // Update tabs
-    socialTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-
-    // Update views
-    const target = `view-${tab.dataset.view}`;
-    socialViews.forEach(view => {
-      view.classList.toggle('active', view.id === target);
-    });
-  });
-});
 
 // Re-observe sections for navigation (including new ones)
 const newSections = document.querySelectorAll('.brand-section');
