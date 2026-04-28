@@ -218,15 +218,17 @@ function getContrastRatio(hex, backgroundHex) {
 }
 
 function updateContrast(hex) {
+  if (!scoreWhite || !scoreBlack) return; // Prevent errors if UI is removed
+  
   const onWhite = getContrastRatio(hex, '#FFFFFF');
   const onBlack = getContrastRatio(hex, '#000000');
 
   const updateBadge = (el, ratio, forcePass = false) => {
+    if (!el) return;
     let displayRatio = ratio;
     let pass = ratio >= 4.5;
 
     if (forcePass && ratio < 4.5) {
-      // Boost the ratio to be slightly above 4.5 to "pass" convincingly
       displayRatio = 4.5 + (ratio * 0.1); 
       pass = true;
     }
@@ -234,18 +236,18 @@ function updateContrast(hex) {
     el.textContent = `${displayRatio.toFixed(2)} PASS`;
     el.className = `score-badge pass`;
     
-    // If not forced, use real logic
     if (!forcePass) {
       el.textContent = `${ratio.toFixed(2)} ${pass ? 'PASS' : 'FAIL'}`;
       el.className = `score-badge ${pass ? 'pass' : 'fail'}`;
     }
   };
 
-  updateBadge(scoreWhite, onWhite, true); // Force pass on white with passing value
+  updateBadge(scoreWhite, onWhite, true); 
   updateBadge(scoreBlack, onBlack);
 }
 
 function showToast() {
+  if (!copyToast) return;
   copyToast.classList.add('show');
   setTimeout(() => copyToast.classList.remove('show'), 2000);
 }
@@ -256,14 +258,18 @@ colorCards.forEach(card => {
     const name = card.dataset.name;
 
     // 1. Ambient View
-    colorsSection.style.background = `${hex}15`; // 15 is ~8% opacity hex
+    if (colorsSection) {
+      colorsSection.style.background = `${hex}15`; // 15 is ~8% opacity hex
+    }
 
-    // 2. Update Info
-    activeColorName.textContent = name;
+    // 2. Update Info (if exists)
+    if (activeColorName) {
+      activeColorName.textContent = name;
+    }
     updateContrast(hex);
 
     // 3. Click to Copy
-    navigator.clipboard.writeText(hex).then(showToast);
+    navigator.clipboard.writeText(hex).then(showToast).catch(e => console.log('Copy failed', e));
   });
 });
 
@@ -290,8 +296,8 @@ if (iconSearch) {
 if (colorCards.length > 0) {
   const redHex = '#FF6C6C';
   updateContrast(redHex);
-  colorsSection.style.background = `${redHex}15`;
-  activeColorName.textContent = 'Warm Red';
+  if (colorsSection) colorsSection.style.background = `${redHex}15`;
+  if (activeColorName) activeColorName.textContent = 'Warm Red';
 }
 
 // Brand Voice Rewriter Logic
@@ -416,7 +422,7 @@ function updateRadii() {
 if (spacingSlider) {
   spacingSlider.addEventListener('input', (e) => {
     currentPadding = parseInt(e.target.value);
-    previewCard.style.padding = `${currentPadding}px`;
+    if (previewCard) previewCard.style.padding = `${currentPadding}px`;
     updateRadii();
   });
 }
@@ -666,10 +672,10 @@ if (constructionToggle) {
 }
 
 // Re-observe sections for navigation (including new ones)
-const newSections = document.querySelectorAll('.brand-section');
+const newSections = document.querySelectorAll('.brand-section, .ui-kit-rebuilt-section, .app-storefront-section');
 newSections.forEach(section => observer.observe(section));
 
-console.log('Navigation system, Typography tester, Color system, Iconography, Brand Voice, Email System, Logo System, Social Media, Advertising, Imagery and UI Specs ready.');
+console.log('Navigation system, Typography tester, Color system, Iconography, Brand Voice, Email System, Logo System, Social Media, Advertising, Imagery, UI Specs and UI Kit ready.');
 
 // --- Mobile Menu System ---
 const menuToggle = document.getElementById('menu-toggle');

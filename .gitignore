@@ -25,3 +25,6 @@ dist-ssr
 
 # Credentials
 assets/GitHub Token.txt
+assets/Vercel Token.txt
+
+.vercel
