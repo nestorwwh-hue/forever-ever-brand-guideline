@@ -1,5 +1,7 @@
 # ♾️ Forever & Ever — Brand Guideline System
 
+📥 [**Download Repository (ZIP) / Descargar Proyecto**](https://github.com/nestorwwh-hue/forever-ever-brand-guideline/archive/refs/heads/master.zip)
+
 ![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=forever-ever-brand-guideline)
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
